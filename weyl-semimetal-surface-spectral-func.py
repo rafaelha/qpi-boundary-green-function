@@ -34,7 +34,7 @@ def s(a,b):
 Nkx = 150
 Nky = 150
 Nkz = 150
-eta = 0.05
+eta = 0.02
 
 # Potential of the single impurity at the surface used in QPI
 U_imp = 0.1
@@ -67,7 +67,7 @@ k = np.array([kx,ky,kz])
 bound_axis = 1
 dkb = dk[bound_axis]
 dk2 = np.prod(dk)/dkb
-kb = k[bound_axis] # 
+kb = k[bound_axis]
 
 
 ########## H1 #################
@@ -82,7 +82,7 @@ kb = k[bound_axis] #
 # g1 = a*sin(kx)
 # g2 = a*sin(ky)
 # g3 = m + t*cos(kz) + 2*b*(2-cos(kx)-cos(ky))
-# E = 0
+# E = 0.3
 
 # H = g1*s(1,3) + g2*s(2,0) + g3*s(3,0) \
 #     + g0*s(0,0) + beta*s(2,2) + alpha*sin(ky)*s(1,2)
@@ -103,7 +103,8 @@ g0 = 2*d*(2-cos(kx)-cos(ky))
 g1 = a*sin(kx)
 g2 = a*sin(ky)
 g3 = m + t*cos(kz) + 2*b*(2-cos(kx)-cos(ky))
-H = g1*s(1,3) + g2*s(2,0) * g3*s(3,0) + d*s(2,3) +beta*s(2,2) + alpha*sin(ky)*s(1,2) + l*sin(kz)*s(0,1)
+H = g1*s(1,3) + g2*s(2,0) + g3*s(3,0) + d*s(2,3) \
+    +beta*s(2,2) + alpha*sin(ky)*s(1,2) + l*sin(kz)*s(0,1)
 
 
 ########## H3 #################
@@ -113,14 +114,12 @@ H = g1*s(1,3) + g2*s(2,0) * g3*s(3,0) + d*s(2,3) +beta*s(2,2) + alpha*sin(ky)*s(
 # tx = 0.5
 # m = 2
 # g = 1.4
+# g = 2.4
 # E = 0.25
 
-# H = g*(sin(2*kx)-cos(k0)) * (cos(kz) - cos(k0)) * s0 \
+# H = g*(cos(2*kx)-cos(k0)) * (cos(kz) - cos(k0)) * s0 \
 #     -m*(1-cos(kz)**2-cos(ky)+2*tx*(cos(kx)-cos(k0))) * sx \
 #         -2*t*sin(ky) * sy - 2*t*cos(kz)*sz
-# # H = g*(cos(2*kx)-cos(k0)) * (cos(kz) - cos(k0)) * s0 \
-# #     -m*(1-cos(kz)**2-cos(ky))* sx +2*tx*(cos(kx)-cos(k0)) * sx \
-# #         -2*t*sin(ky) * sy - 2*t*cos(kz)*sz
 
 ###########################
 id_ = np.eye(H.shape[-1])
@@ -131,7 +130,7 @@ w = E # set the frequency to the Fermi energy
 # define the inverse Green's function
 Ginv = (w + 1j*eta)*id - H
 
-# matrix of impurity
+# matrix of single impurity used for QPI
 # adjust this to define the position of the impurity on the sublattice
 U_imp_m = np.eye(Ginv.shape[-1])
 
@@ -164,6 +163,8 @@ Asurface = Abulk_int + Asurface_correction
 
 plt.figure('bound spect f')
 plt.clf()
+# plt.pcolormesh(kx_/np.pi,kz_/np.pi,Abulk_int.T, cmap='inferno', shading='auto')
+# plt.pcolormesh(kx_/np.pi,kz_/np.pi,Asurface_correction.T, cmap='inferno', shading='auto')
 plt.pcolormesh(kx_/np.pi,kz_/np.pi,Asurface.T, cmap='inferno', shading='auto')
 plt.xlabel('$k_x/\pi$')
 plt.ylabel('$k_z/\pi$')
